@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% if pageTitle %}{{ pageTitle }} — {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
+  <meta name="description" content="{{ pageDescription or site.description }}">
+  {% set root = page.url | rootPath %}
+  <link rel="stylesheet" href="{{ root }}/assets/css/style.css">
+  <link rel="alternate" type="application/rss+xml" title="{{ site.title }} RSS" href="{{ root }}/feed.xml">
+</head>
+<body>
+
+  <div id="flex-container">
+
+    <!-- Fixed Sidebar -->
+    <div id="sidebar">
+
+      <a href="{{ root }}/" class="site-branding">
+        <div class="site-title">{{ site.title }}</div>
+      </a>
+
+      <!-- Search -->
+      <div class="sidebar-section">
+        <h2>Search</h2>
+        <form class="search-form" action="{{ root }}/search/" method="get" onsubmit="return sidebarSearch(event)">
+          <input type="text" id="sidebarSearchInput" placeholder="Search…" autocomplete="off">
+          <button type="submit" aria-label="Search">&#128269;</button>
+        </form>
+      </div>
+
+      <!-- Subscribe -->
+      <div class="sidebar-section">
+        <h2>Subscribe</h2>
+        <form class="subscribe-form" onsubmit="return handleSubscribe(event)">
+          <input type="email" placeholder="me@email.com" required>
+          <button type="submit">Sign Up</button>
+        </form>
+        <div class="sidebar-small" id="signupMsg" style="display:none;"></div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="sidebar-section">
+        <h2>Navigate</h2>
+        <div class="sidebar-nav">
+          <a href="{{ root }}/">Home</a>
+          <a href="{{ root }}/archive/">Archive</a>
+          <a href="{{ root }}/categories/">Categories</a>
+          <a href="{{ root }}/search/">Search All Posts</a>
+          <a href="{{ root }}/about/">About</a>
+          <a href="{{ root }}/feed.xml">RSS Feed</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Content Area -->
+    <div id="content-container">
+      <main id="content">
+        {{ content | safe }}
+      </main>
+    </div>
+
+  </div>
+
+  <script src="{{ root }}/assets/js/app.js"></script>
+
+</body>
+</html>

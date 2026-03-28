@@ -1,0 +1,24 @@
+---
+layout: base.njk
+pageTitle: Archive
+permalink: /archive/
+---
+
+<div class="fade-in">
+  <h1 class="page-title">Archive</h1>
+
+  {% set groups = collections.posts | groupByMonth %}
+  {% for group in groups %}
+  <div class="archive-section">
+    <h2 class="archive-month">{{ group.month }}</h2>
+    <ul class="archive-list">
+      {% for post in group.posts %}
+      <li>
+        <span class="archive-date">{{ post.date | shortDate }}</span>
+        <a href="{{ post.url }}" class="archive-link">{{ post.data.title }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endfor %}
+</div>

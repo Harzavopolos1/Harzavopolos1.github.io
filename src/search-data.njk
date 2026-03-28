@@ -1,0 +1,8 @@
+---
+permalink: /assets/js/search-data.js
+eleventyExcludeFromCollections: true
+---
+window.SEARCH_DATA = [
+{% for post in collections.posts %}  {"title":"{{ post.data.title | replace('"', '\\"') }}","url":"{{ post.url }}","date":"{{ post.date | upperDate }}","categories":[{% for cat in post.data.categories %}"{{ cat }}"{% if not loop.last %},{% endif %}{% endfor %}],"content":"{{ post.templateContent | replace('<[^>]+>', ' ') | replace('"', '\\"') | replace('\n', ' ') | replace('\r', '') | truncate(500) }}"}{% if not loop.last %},
+{% endif %}{% endfor %}
+];

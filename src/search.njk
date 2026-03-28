@@ -1,0 +1,16 @@
+---
+layout: base.njk
+pageTitle: Search
+permalink: /search/
+---
+
+<div class="fade-in">
+  <h1 class="page-title">Search</h1>
+  <div class="search-container">
+    <input type="text" class="search-page-input" id="searchPageInput" placeholder="Search all posts…" autofocus>
+  </div>
+  <div id="searchResults"></div>
+</div>
+
+<!-- Search index generated at build time -->
+<script src="/assets/js/search-data.js"></script>
