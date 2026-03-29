@@ -1,0 +1,14 @@
+---
+layout: base.njk
+pageTitle: About
+permalink: /about/
+---
+
+<div class="fade-in">
+  <h1 class="page-title">About</h1>
+  <div class="post-content">
+    {% for para in site.about.split("\n\n") %}
+    <p>{{ para }}</p>
+    {% endfor %}
+  </div>
+</div>

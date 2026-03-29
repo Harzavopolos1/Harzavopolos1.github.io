@@ -1,0 +1,26 @@
+---
+layout: base.njk
+pageTitle: Categories
+permalink: /categories/
+---
+
+<div class="fade-in">
+  <h1 class="page-title">Categories</h1>
+
+  {% for cat in collections.categories %}
+  <div class="category-section">
+    <h2 class="category-name">
+      <a href="{{ page.url | rootPath }}/categories/{{ cat.slug }}/">{{ cat.name }}</a>
+      <span class="category-count">({{ cat.count }})</span>
+    </h2>
+    <ul class="archive-list">
+      {% for post in cat.posts %}
+      <li>
+        <span class="archive-date">{{ post.date | shortDate }}</span>
+        <a href="{{ post.url }}" class="archive-link">{{ post.data.title }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endfor %}
+</div>
