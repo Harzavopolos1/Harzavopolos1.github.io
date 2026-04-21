@@ -10,75 +10,100 @@ function sidebarSearch(event) {
   if (query) {
     window.location.href = `/search/?q=${encodeURIComponent(query)}`;
   }
-  return false;
-}
+
 
 // ============================================================================
-// 2. SUBSCRIBE HANDLER (localStorage)
+// 2. SUBSCRIBE: Enter → send magic link → reveal optional profile fields
 // ============================================================================
 function handleSubscribe(event) {
   event.preventDefault();
-  const form = event.target;
-  const emailInput = form.querySelector('input[type="email"]');
-  const email = emailInput.value.trim();
-  const msgDiv = document.getElementById('signupMsg');
-
+  var form = event.target;
+  var input = form.querySelector('input[name=email]');
+  var email = (input.value || '').trim();
+  var msg = document.getElementById('signupMsg');
   if (!email) return false;
 
-  msgDiv.textContent = 'Sending you a sign-in link…';
-  msgDiv.style.color = '';
-  msgDiv.style.display = 'block';
+  msg.textContent = 'Sending you a sign-in link…';
+  msg.style.color = '';
+  msg.style.display = 'block';
 
   fetch('https://app.arnavnavon.com/auth/magic-link', {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({
-      email: email,
-      source: location.pathname,
-      name: (form.querySelector('[name=name]') || {}).value || null,
-      age_range: (form.querySelector('[name=age_range]') || {}).value || null,
-      interests: Array.from(form.querySelectorAll('[name=interests]:checked')).map(function(c){return c.value;})
-    })
+    body: JSON.stringify({ email: email, source: location.pathname })
   })
-  .then(r => r.json())
-  .then(data => {
-    if (data && data.ok) {
-      msgDiv.textContent = 'Check your inbox — click the link to confirm.';
-      msgDiv.style.color = '#155724';
-      emailInput.value = '';
-      setTimeout(() => { msgDiv.style.display = 'none'; }, 8000);
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    if (d && d.ok) {
+      msg.textContent = 'Check your inbox — click the link to confirm.';
+      msg.style.color = '#155724';
+      input.disabled = true;
+      window.__arnavSignupEmail = email;
+      var profile = document.getElementById('subscribeProfile');
+      if (profile) profile.style.display = 'block';
     } else {
-      msgDiv.textContent = (data && data.error) || 'Something went wrong — try again.';
-      msgDiv.style.color = '#842029';
+      msg.textContent = (d && d.error) || 'Something went wrong — try again.';
+      msg.style.color = '#842029';
     }
   })
-  .catch(() => {
-    msgDiv.textContent = 'Network error — try again.';
-    msgDiv.style.color = '#842029';
+  .catch(function(){
+    msg.textContent = 'Network error — try again.';
+    msg.style.color = '#842029';
   });
 
   return false;
 }
 
-// Show "Signed in as …" under the subscribe form if the visitor has a session.
+function handleSubscribeProfile(event) {
+  event.preventDefault();
+  var form = event.target;
+  var email = window.__arnavSignupEmail;
+  var msg = document.getElementById('signupMsg');
+  if (!email) return false;
+  var payload = {
+    email: email,
+    name: (form.querySelector('[name=name]') || {}).value || null,
+    age_range: (form.querySelector('[name=age_range]') || {}).value || null,
+    interests: Array.from(form.querySelectorAll('[name=interests]:checked')).map(function(c){return c.value;})
+  };
+  fetch('https://app.arnavnavon.com/auth/profile', {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(payload)
+  }).then(function(){
+    form.style.display = 'none';
+    msg.textContent = 'Thanks! Check your inbox to finish signing in.';
+    msg.style.color = '#155724';
+  }).catch(function(){});
+  return false;
+}
+
+// If already signed in, hide the subscribe form.
 (function checkSignedIn() {
   fetch('https://app.arnavnavon.com/auth/me', { credentials: 'include' })
-    .then(r => r.json())
-    .then(d => {
+    .then(function(r){ return r.json(); })
+    .then(function(d){
       if (!d || !d.ok) return;
-      const section = document.querySelector('.subscribe-form');
-      if (!section) return;
-      section.style.display = 'none';
-      const msg = document.getElementById('signupMsg');
+      var form = document.getElementById('subscribeForm');
+      if (form) form.style.display = 'none';
+      var msg = document.getElementById('signupMsg');
       if (msg) {
         msg.textContent = 'Signed in as ' + d.email;
         msg.style.color = '#155724';
         msg.style.display = 'block';
       }
     })
-    .catch(() => {});
+    .catch(function(){});
 })();
+
+  return false;
+}
+
+// ============================================================================
+// 2. SUBSCRIBE HANDLER (localStorage)
+// ============================================================================
 
 // ============================================================================
 // 3. COPY-LINK HELPER FOR SHARE BUTTONS
@@ -256,15 +281,4 @@ function escapeHtml(text) {
 
 
 // ============================================================================
-// 5. SUBSCRIBE PROGRESSIVE DISCLOSURE
-// ============================================================================
-document.addEventListener('DOMContentLoaded', function () {
-  var btn = document.getElementById('subMore');
-  var extra = document.getElementById('subscribeExtra');
-  if (!btn || !extra) return;
-  btn.addEventListener('click', function () {
-    var hidden = extra.style.display === 'none' || !extra.style.display;
-    extra.style.display = hidden ? 'block' : 'none';
-    btn.textContent = hidden ? '− less' : '＋ more details';
-  });
 });

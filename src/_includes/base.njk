@@ -35,42 +35,49 @@
       <div class="sidebar-section" id="subscribeSection">
         <h2>Subscribe</h2>
         <p class="sidebar-small" style="margin:0 0 10px;color:#666">Get early access + exclusive content.</p>
+
         <form class="subscribe-form" onsubmit="return handleSubscribe(event)" id="subscribeForm">
-          <input type="email" name="email" placeholder="me@email.com" required autocomplete="email">
+          <input type="email" name="email" placeholder="me@email.com — press Enter" required autocomplete="email">
+        </form>
 
-          <div id="subscribeExtra" style="display:none;margin-top:10px;border-top:1px dashed #ddd;padding-top:10px">
-            <label class="sub-label">Name <span class="sub-opt">(optional)</span></label>
-            <input type="text" name="name" placeholder="Your name" autocomplete="name">
+        <div class="sidebar-small" id="signupMsg" style="display:none;"></div>
 
-            <label class="sub-label" style="margin-top:8px">Age range <span class="sub-opt">(optional)</span></label>
-            <select name="age_range">
-              <option value="">— skip —</option>
-              <option>18-24</option>
-              <option>25-34</option>
-              <option>35-44</option>
-              <option>45-54</option>
-              <option>55-64</option>
-              <option>65+</option>
-            </select>
+        <form id="subscribeProfile" style="display:none;margin-top:10px;border-top:1px dashed #ddd;padding-top:10px" onsubmit="return handleSubscribeProfile(event)">
+          <p class="sidebar-small" style="margin:0 0 8px;color:#333"><strong>Tell us a bit more</strong> <span style="color:#888">(optional)</span></p>
 
-            <label class="sub-label" style="margin-top:8px">Interests <span class="sub-opt">(pick any)</span></label>
-            <div class="sub-chips" id="subInterests">
-              <label class="sub-chip"><input type="checkbox" name="interests" value="Creativity &amp; Writing"> Creativity &amp; Writing</label>
-              <label class="sub-chip"><input type="checkbox" name="interests" value="Business &amp; Entrepreneurship"> Business</label>
-              <label class="sub-chip"><input type="checkbox" name="interests" value="Investing &amp; Money"> Investing</label>
-              <label class="sub-chip"><input type="checkbox" name="interests" value="Parenting &amp; Family"> Parenting</label>
-              <label class="sub-chip"><input type="checkbox" name="interests" value="Philosophy &amp; Ideas"> Philosophy</label>
-              <label class="sub-chip"><input type="checkbox" name="interests" value="Personal Development"> Personal growth</label>
-              <label class="sub-chip"><input type="checkbox" name="interests" value="Technology"> Technology</label>
-              <label class="sub-chip"><input type="checkbox" name="interests" value="Health &amp; Habits"> Health</label>
-            </div>
+          <label class="sub-label">Name</label>
+          <input type="text" name="name" placeholder="Your name" autocomplete="name">
+
+          <label class="sub-label" style="margin-top:8px">Age range</label>
+          <select name="age_range">
+            <option value="">— skip —</option>
+            <option>18-24</option>
+            <option>25-34</option>
+            <option>35-44</option>
+            <option>45-54</option>
+            <option>55-64</option>
+            <option>65+</option>
+          </select>
+
+          <label class="sub-label" style="margin-top:8px">Interests</label>
+          <div class="sub-chips">
+            <label class="sub-chip"><input type="checkbox" name="interests" value="Creativity &amp; Writing"> Creativity &amp; Writing</label>
+            <label class="sub-chip"><input type="checkbox" name="interests" value="Business &amp; Entrepreneurship"> Business</label>
+            <label class="sub-chip"><input type="checkbox" name="interests" value="Investing &amp; Money"> Investing</label>
+            <label class="sub-chip"><input type="checkbox" name="interests" value="Parenting &amp; Family"> Parenting</label>
+            <label class="sub-chip"><input type="checkbox" name="interests" value="Philosophy &amp; Ideas"> Philosophy</label>
+            <label class="sub-chip"><input type="checkbox" name="interests" value="Personal Development"> Personal growth</label>
+            <label class="sub-chip"><input type="checkbox" name="interests" value="Technology"> Technology</label>
+            <label class="sub-chip"><input type="checkbox" name="interests" value="Health &amp; Habits"> Health</label>
           </div>
 
-          <button type="button" id="subMore" class="sub-more" title="Add more details">＋ more details</button>
-          <button type="submit" style="margin-top:8px">Sign Up</button>
+          <div style="display:flex;gap:6px;margin-top:10px">
+            <button type="submit">Save</button>
+            <button type="button" onclick="document.getElementById('subscribeProfile').style.display='none'" style="background:transparent;border:0;color:#888;cursor:pointer;font-size:12px">Skip</button>
+          </div>
         </form>
-        <div class="sidebar-small" id="signupMsg" style="display:none;"></div>
       </div>
+
 
       <!-- Navigation -->
       <div class="sidebar-section">
