@@ -67,5 +67,19 @@
 
   <script src="{{ root }}/assets/js/app.js"></script>
 
+  <script>
+    (function(){
+      try {
+        fetch('https://app.arnavnavon.com/track', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({url: location.pathname, ref: document.referrer || ''}),
+          keepalive: true,
+          mode: 'cors',
+          credentials: 'omit'
+        }).catch(function(){});
+      } catch(e) {}
+    })();
+  </script>
 </body>
 </html>
