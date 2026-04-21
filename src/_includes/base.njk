@@ -70,14 +70,13 @@
   <script>
     (function(){
       try {
-        fetch('https://app.arnavnavon.com/track', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({url: location.pathname, ref: document.referrer || ''}),
-          keepalive: true,
-          mode: 'cors',
-          credentials: 'omit'
-        }).catch(function(){});
+        var body = JSON.stringify({url: location.pathname, ref: document.referrer || ''});
+        var blob = new Blob([body], {type: 'text/plain'});
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('https://app.arnavnavon.com/track', blob);
+        } else {
+          fetch('https://app.arnavnavon.com/track', {method: 'POST', body: blob, keepalive: true, mode: 'no-cors'}).catch(function(){});
+        }
       } catch(e) {}
     })();
   </script>
