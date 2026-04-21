@@ -33,7 +33,13 @@ function handleSubscribe(event) {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({ email: email, source: location.pathname })
+    body: JSON.stringify({
+      email: email,
+      source: location.pathname,
+      name: (form.querySelector('[name=name]') || {}).value || null,
+      age_range: (form.querySelector('[name=age_range]') || {}).value || null,
+      interests: Array.from(form.querySelectorAll('[name=interests]:checked')).map(function(c){return c.value;})
+    })
   })
   .then(r => r.json())
   .then(data => {
@@ -247,3 +253,18 @@ function escapeHtml(text) {
   };
   return text.replace(/[&<>"']/g, m => map[m]);
 }
+
+
+// ============================================================================
+// 5. SUBSCRIBE PROGRESSIVE DISCLOSURE
+// ============================================================================
+document.addEventListener('DOMContentLoaded', function () {
+  var btn = document.getElementById('subMore');
+  var extra = document.getElementById('subscribeExtra');
+  if (!btn || !extra) return;
+  btn.addEventListener('click', function () {
+    var hidden = extra.style.display === 'none' || !extra.style.display;
+    extra.style.display = hidden ? 'block' : 'none';
+    btn.textContent = hidden ? '− less' : '＋ more details';
+  });
+});
