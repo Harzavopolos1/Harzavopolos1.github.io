@@ -21,25 +21,58 @@ function handleSubscribe(event) {
   const form = event.target;
   const emailInput = form.querySelector('input[type="email"]');
   const email = emailInput.value.trim();
+  const msgDiv = document.getElementById('signupMsg');
 
-  if (email) {
-    // Store email to localStorage
-    localStorage.setItem('subscriberEmail', email);
+  if (!email) return false;
 
-    // Show confirmation message
-    const msgDiv = document.getElementById('signupMsg');
-    msgDiv.textContent = 'Thanks! Check your email to confirm.';
-    msgDiv.style.display = 'block';
+  msgDiv.textContent = 'Sending you a sign-in link…';
+  msgDiv.style.color = '';
+  msgDiv.style.display = 'block';
 
-    // Clear input and hide message after 5 seconds
-    emailInput.value = '';
-    setTimeout(() => {
-      msgDiv.style.display = 'none';
-    }, 5000);
-  }
+  fetch('https://app.arnavnavon.com/auth/magic-link', {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ email: email, source: location.pathname })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data && data.ok) {
+      msgDiv.textContent = 'Check your inbox — click the link to confirm.';
+      msgDiv.style.color = '#155724';
+      emailInput.value = '';
+      setTimeout(() => { msgDiv.style.display = 'none'; }, 8000);
+    } else {
+      msgDiv.textContent = (data && data.error) || 'Something went wrong — try again.';
+      msgDiv.style.color = '#842029';
+    }
+  })
+  .catch(() => {
+    msgDiv.textContent = 'Network error — try again.';
+    msgDiv.style.color = '#842029';
+  });
 
   return false;
 }
+
+// Show "Signed in as …" under the subscribe form if the visitor has a session.
+(function checkSignedIn() {
+  fetch('https://app.arnavnavon.com/auth/me', { credentials: 'include' })
+    .then(r => r.json())
+    .then(d => {
+      if (!d || !d.ok) return;
+      const section = document.querySelector('.subscribe-form');
+      if (!section) return;
+      section.style.display = 'none';
+      const msg = document.getElementById('signupMsg');
+      if (msg) {
+        msg.textContent = 'Signed in as ' + d.email;
+        msg.style.color = '#155724';
+        msg.style.display = 'block';
+      }
+    })
+    .catch(() => {});
+})();
 
 // ============================================================================
 // 3. COPY-LINK HELPER FOR SHARE BUTTONS
