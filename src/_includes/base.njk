@@ -108,13 +108,55 @@
   <script>
     (function(){
       try {
-        var body = JSON.stringify({url: location.pathname, ref: document.referrer || ''});
-        var blob = new Blob([body], {type: 'text/plain'});
-        if (navigator.sendBeacon) {
-          navigator.sendBeacon('https://app.arnavnavon.com/track', blob);
-        } else {
-          fetch('https://app.arnavnavon.com/track', {method: 'POST', body: blob, keepalive: true, mode: 'no-cors'}).catch(function(){});
+        var TRACK = 'https://app.arnavnavon.com/track';
+        var eventId = (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(36).slice(2));
+        var qs = new URLSearchParams(location.search);
+        var base = {
+          url: location.pathname,
+          ref: document.referrer || '',
+          event_id: eventId,
+          utm_source: qs.get('utm_source'),
+          utm_medium: qs.get('utm_medium'),
+          utm_campaign: qs.get('utm_campaign')
+        };
+        function send(extra) {
+          var body = JSON.stringify(Object.assign({}, base, extra || {}));
+          var blob = new Blob([body], {type: 'text/plain'});
+          if (navigator.sendBeacon) navigator.sendBeacon(TRACK, blob);
+          else fetch(TRACK, {method: 'POST', body: blob, keepalive: true, mode: 'no-cors'}).catch(function(){});
         }
+        send(); // initial beacon — creates the row
+        // Track max scroll + active reading time, send on tab-hide / page-unload.
+        var maxScroll = 0;
+        var startMs = Date.now();
+        var activeMs = 0;
+        var lastTickMs = Date.now();
+        var visible = document.visibilityState === 'visible';
+        function tick() {
+          var now = Date.now();
+          if (visible) activeMs += (now - lastTickMs);
+          lastTickMs = now;
+          // Update scroll depth
+          var scrolled = window.scrollY || document.documentElement.scrollTop;
+          var docHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight) - window.innerHeight;
+          if (docHeight > 0) {
+            var pct = Math.min(100, Math.round((scrolled / docHeight) * 100));
+            if (pct > maxScroll) maxScroll = pct;
+          } else {
+            maxScroll = Math.max(maxScroll, 100);
+          }
+        }
+        setInterval(tick, 1000);
+        document.addEventListener('scroll', tick, {passive: true});
+        document.addEventListener('visibilitychange', function(){
+          tick();
+          visible = document.visibilityState === 'visible';
+          if (!visible) send({scroll_depth: maxScroll, read_seconds: Math.round(activeMs / 1000)});
+        });
+        window.addEventListener('pagehide', function(){
+          tick();
+          send({scroll_depth: maxScroll, read_seconds: Math.round(activeMs / 1000)});
+        });
       } catch(e) {}
     })();
   </script>
