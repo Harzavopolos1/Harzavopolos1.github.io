@@ -1,6 +1,6 @@
 ---
 title: "The cost of opting out"
-date: 2026-04-20
+date: 2026-04-21T09:43:05
 categories: ["Ideas"]
 layout: post.njk
 ---
