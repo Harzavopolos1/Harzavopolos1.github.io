@@ -4,6 +4,9 @@ module.exports = function (eleventyConfig) {
 
   // --- Pass through static assets ---
   eleventyConfig.addPassthroughCopy("src/assets");
+  eleventyConfig.addPassthroughCopy("src/he/assets/css");
+  eleventyConfig.addPassthroughCopy({ "src/assets/images": "he/assets/images" }); // keep old /he/ image URLs alive
+  eleventyConfig.addPassthroughCopy("src/he/assets/js/app.js");
 
   // --- Date filters ---
   eleventyConfig.addFilter("readableDate", (dateObj) => {
@@ -88,6 +91,32 @@ module.exports = function (eleventyConfig) {
     return Object.entries(catMap).sort((a, b) => a[0].localeCompare(b[0])).map(([name, posts]) => ({
       name,
       slug: name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
+      posts: posts.sort((a, b) => b.date - a.date),
+      count: posts.length
+    }));
+  });
+
+
+  // ===== Hebrew site (/he/) — merged from the old Harzavopolos1/he repo on 2026-09-24 =====
+  const slugifyHe = (str) => String(str).toLowerCase().replace(/\s+/g, "-").replace(/[^\w\u0590-\u05FF-]+/g, "").replace(/^-|-$/g, "");
+  eleventyConfig.addFilter("slugifyHe", slugifyHe);
+
+  eleventyConfig.addCollection("postsHe", function (collectionApi) {
+    return collectionApi.getFilteredByGlob("src/he/posts/*.md").sort((a, b) => b.date - a.date);
+  });
+
+  eleventyConfig.addCollection("categoriesHe", function (collectionApi) {
+    const posts = collectionApi.getFilteredByGlob("src/he/posts/*.md");
+    const catMap = {};
+    posts.forEach(post => {
+      (post.data.categories || []).forEach(c => {
+        if (!catMap[c]) catMap[c] = [];
+        catMap[c].push(post);
+      });
+    });
+    return Object.entries(catMap).sort((a, b) => a[0].localeCompare(b[0])).map(([name, posts]) => ({
+      name,
+      slug: slugifyHe(name),
       posts: posts.sort((a, b) => b.date - a.date),
       count: posts.length
     }));

@@ -22,4 +22,22 @@ eleventyExcludeFromCollections: true
   <url>
     <loc>https://arnavnavon.com/categories/</loc>
   </url>
+{%- for post in collections.postsHe %}
+  <url>
+    <loc>https://arnavnavon.com{{ post.url }}</loc>
+    <lastmod>{{ post.date.toISOString() }}</lastmod>
+  </url>
+{%- endfor %}
+  <url>
+    <loc>https://arnavnavon.com/he/</loc>
+  </url>
+  <url>
+    <loc>https://arnavnavon.com/he/about/</loc>
+  </url>
+  <url>
+    <loc>https://arnavnavon.com/he/archive/</loc>
+  </url>
+  <url>
+    <loc>https://arnavnavon.com/he/categories/</loc>
+  </url>
 </urlset>

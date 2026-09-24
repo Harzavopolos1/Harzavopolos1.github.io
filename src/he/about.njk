@@ -1,0 +1,14 @@
+---
+layout: he/base.njk
+pageTitle: אודות
+permalink: /he/about/
+---
+
+<div class="fade-in">
+  <h1 class="page-title">אודות</h1>
+  <div class="post-content">
+    {% for para in siteHe.about.split("\n\n") %}
+    <p>{{ para }}</p>
+    {% endfor %}
+  </div>
+</div>

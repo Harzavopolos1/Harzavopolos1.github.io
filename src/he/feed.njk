@@ -1,0 +1,25 @@
+---
+permalink: /he/feed.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>{{ siteHe.title }}</title>
+    <description>{{ siteHe.description }}</description>
+    <link>{{ siteHe.url }}</link>
+    <atom:link href="{{ siteHe.url }}/feed.xml" rel="self" type="application/rss+xml"/>
+    <lastBuildDate>{{ collections.postsHe[0].date | rssDate }}</lastBuildDate>
+    {% for post in collections.postsHe | limit(20) %}
+    <item>
+      <title>{{ post.data.title }}</title>
+      <link>https://arnavnavon.com{{ post.url }}</link>
+      <guid>https://arnavnavon.com{{ post.url }}</guid>
+      <pubDate>{{ post.date | rssDate }}</pubDate>
+      <description><![CDATA[{{ post.templateContent | safe }}]]></description>
+      {% for cat in post.data.categories %}<category>{{ cat }}</category>
+      {% endfor %}
+    </item>
+    {% endfor %}
+  </channel>
+</rss>

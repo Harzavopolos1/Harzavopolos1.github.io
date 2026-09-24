@@ -1,0 +1,26 @@
+---
+layout: he/base.njk
+pageTitle: קטגוריות
+permalink: /he/categories/
+---
+
+<div class="fade-in">
+  <h1 class="page-title">קטגוריות</h1>
+
+  {% for cat in collections.categoriesHe %}
+  <div class="category-section">
+    <h2 class="category-name">
+      <a href="{{ page.url | rootPath }}/he/categories/{{ cat.slug }}/">{{ cat.name }}</a>
+      <span class="category-count">({{ cat.count }})</span>
+    </h2>
+    <ul class="archive-list">
+      {% for post in cat.posts %}
+      <li>
+        <span class="archive-date">{{ post.date | shortDate }}</span>
+        <a href="{{ post.url }}" class="archive-link">{{ post.data.title }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endfor %}
+</div>

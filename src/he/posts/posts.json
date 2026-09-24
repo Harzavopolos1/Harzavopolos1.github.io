@@ -1,0 +1,5 @@
+{
+  "layout": "he/post.njk",
+  "permalink": "/he/posts/{{ title | slugifyHe }}/",
+  "tags": "postsHe"
+}
