@@ -4,7 +4,10 @@ name = "site-arnavnavon"
 main = "worker/worker.js"
 compatibility_date = "2025-09-01"
 workers_dev = false
-routes = [ { pattern = "new.arnavnavon.com", custom_domain = true } ]
+routes = [
+  { pattern = "arnavnavon.com/*", zone_name = "arnavnavon.com" },  # live site: worker route on the proxied apex (no DNS change)
+  { pattern = "new.arnavnavon.com", custom_domain = true },        # test address
+]
 
 [assets]
 directory = "_site"
