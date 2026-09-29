@@ -107,6 +107,14 @@
 
   </div>
 
+  <script>
+    // cookieless page-view count (Cloudflare worker /api/hit — no cookies, no IP stored)
+    (function(){try{var q=new URLSearchParams(location.search),s={landing:location.pathname,ref:document.referrer||''};
+    ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid'].forEach(function(k){var v=q.get(k);if(v)s[k]=v.slice(0,150);});
+    var b=JSON.stringify({path:location.pathname,ref:document.referrer||'',src:s});
+    if(navigator.sendBeacon)navigator.sendBeacon('/api/hit',new Blob([b],{type:'text/plain'}));}catch(e){}})();
+  </script>
+
   <script src="{{ root }}/assets/js/app.js"></script>
 
   <script>

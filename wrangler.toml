@@ -1,0 +1,28 @@
+# arnavnavon.com on Cloudflare (site factory infrastructure). Deployed by .github/workflows/deploy.yml on every push to main.
+# worker/worker.js is a copy of ~/Cowork/site-factory/worker/worker.js — refresh it when the factory worker changes.
+name = "site-arnavnavon"
+main = "worker/worker.js"
+compatibility_date = "2025-09-01"
+workers_dev = false
+routes = [ { pattern = "new.arnavnavon.com", custom_domain = true } ]
+
+[assets]
+directory = "_site"
+binding = "ASSETS"
+not_found_handling = "404-page"
+run_worker_first = ["/api/*"]
+
+[vars]
+SITE = "arnavnavon"
+SITE_NAME = "ארנב נבון"
+LANG = "he"
+FROM_EMAIL = ""
+REPLY_TO = "hello@arnavnavon.com"
+AUTOREPLY = "{}"
+LEAD_TO = ""
+LEAD_TO_NAME = ""
+
+[[d1_databases]]
+binding = "DB"
+database_name = "sites-hub"
+database_id = "ef69d298-8977-4dd2-ad6f-5c41d67eee8e"

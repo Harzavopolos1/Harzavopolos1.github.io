@@ -4,6 +4,7 @@ module.exports = function (eleventyConfig) {
 
   // --- Pass through static assets ---
   eleventyConfig.addPassthroughCopy("src/assets");
+  eleventyConfig.addPassthroughCopy("src/_headers"); // security headers (Cloudflare Workers assets)
   eleventyConfig.addPassthroughCopy("src/he/assets/css");
   eleventyConfig.addPassthroughCopy({ "src/assets/images": "he/assets/images" }); // keep old /he/ image URLs alive
   eleventyConfig.addPassthroughCopy("src/he/assets/js/app.js");
